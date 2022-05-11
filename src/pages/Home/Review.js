@@ -2,6 +2,7 @@ import React from "react";
 
 const Review = ({ review }) => {
   const { reviews, img, name } = review;
+  
   return (
     <div className="mx-auto">
       <div className="card  lg:max-w-lg bg-base-100 shadow-xl p-6">
