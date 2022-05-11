@@ -5,7 +5,7 @@ import img from '../../assets/images/chair.png';
 
 const AppoinmentBanner = ({ date, setDate }) => {
   return (
-    <div class="md:flex items-center justify-center flex-row-reverse gap-6 mt-28 mb-16">
+    <div className="md:flex items-center justify-center flex-row-reverse gap-6 mt-28 mb-16">
       <div className="">
       <img src={img} className='max-w-sm w-[100%]' alt="" />
       </div>

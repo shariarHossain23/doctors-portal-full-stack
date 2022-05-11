@@ -9,8 +9,8 @@ const Review = ({ review }) => {
           <p>{reviews}</p>
         </div>
         <div className="flex items-center">
-            <div class="avatar">
-              <div class="w-24 rounded-full ring ring-primary ring-offset-base-100 mr-5">
+            <div className="avatar">
+              <div className="w-24 rounded-full ring ring-primary ring-offset-base-100 mr-5">
                 <img src={img} />
               </div>
             </div>
