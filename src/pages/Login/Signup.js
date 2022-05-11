@@ -1,19 +1,23 @@
 import React from "react";
 import {
     useAuthState,
-    useSignInWithEmailAndPassword,
-    useSignInWithGoogle
+    useCreateUserWithEmailAndPassword, useSignInWithGoogle, useUpdateProfile
 } from "react-firebase-hooks/auth";
 import { useForm } from "react-hook-form";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import auth from "../../firebase.init";
 import Loading from "../Shared/Loading/Loading";
 
-const Login = () => {
+const Signup = () => {
     const [users, loadings, userError] = useAuthState(auth);
   const [signInWithGoogle, gUser, gLoading, gError] = useSignInWithGoogle(auth);
-  const [signInWithEmailAndPassword, user, loading, error] =
-    useSignInWithEmailAndPassword(auth);
+  const [
+    createUserWithEmailAndPassword,
+    user,
+    loading,
+    error,
+  ] = useCreateUserWithEmailAndPassword(auth);
+  const [updateProfile, updating, updateError] = useUpdateProfile(auth);
   const {
     register,
     formState: { errors },
@@ -29,27 +33,60 @@ const Login = () => {
 
   let signError;
   //   loading
-  if (gLoading || loading) {
-    return <Loading></Loading>
+  if (gLoading || loading || updating) {
+    return <Loading></Loading>;
   }
 
-  if (gError || error) {
-    signError = <p className="text-red-500 mb-2">{gError?.message || error?.message}</p>;
+  if (gError || error || updateError) {
+    signError = (
+      <p className="text-red-500 mb-2">{gError?.message || error?.message}</p>
+    );
   }
   //   google sign in
   const googleSignIn = () => {
     signInWithGoogle();
   };
 
-  const onSubmit = (data) => {
-    signInWithEmailAndPassword(data.email, data.password);
+  const onSubmit = async (data) => {
+    await createUserWithEmailAndPassword(data.email,data.password)
+    await updateProfile({ displayName:data.name });
+    
+    
   };
   return (
     <div className="flex h-screen justify-center items-center">
       <div className="card w-96 bg-base-100 shadow-xl">
         <div className="card-body">
-          <h2 className="text-center text-2xl font-bold">Login</h2>
+          <h2 className="text-center text-2xl font-bold">Sign Up</h2>
           <form onSubmit={handleSubmit(onSubmit)}>
+            <div className="form-control w-full max-w-xs">
+              <label className="label">
+                <span className="label-text">Name</span>
+              </label>
+              <input
+                {...register("name", {
+                  required: {
+                    value: true,
+                    message: "name required",
+                  },
+                })}
+                type="text"
+                placeholder=" your name"
+               className="input input-bordered w-full max-w-xs"
+              />
+              <label className="label">
+                {errors.name?.type === "required" && (
+                  <span className="label-text-alt text-red-500">
+                    {errors.name.message}
+                  </span>
+                )}
+                {errors.email?.type === "pattern" && (
+                  <span className="label-text-alt text-red-500">
+                    {errors.email.message}
+                  </span>
+                )}
+              </label>
+            </div>
             <div className="form-control w-full max-w-xs">
               <label className="label">
                 <span className="label-text">Email</span>
@@ -118,10 +155,15 @@ const Login = () => {
             <input
               className="btn w-full max-w-xs"
               type="submit"
-              value="login"
+              value="sign up"
             />
           </form>
-          <p>New to Doctors Portal?<Link to='/signup' className="text-secondary">Create new account</Link></p>
+          <p>
+            You have already account?
+            <Link to="/login" className="text-secondary">
+              Login
+            </Link>
+          </p>
           <div className="divider">OR</div>
           <button onClick={googleSignIn} className="btn btn-outline">
             Continue with google
@@ -132,4 +174,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Signup;
