@@ -1,11 +1,12 @@
 import { format } from "date-fns";
 import React from "react";
 
-const Booking = ({ treatments, date }) => {
+const Booking = ({ treatments,setTretment, date }) => {
   const { name, slots } = treatments;
   const handleSubmit = event => {
       event.preventDefault()
       const slot = event.target.slot.value
+      setTretment(null)
       console.log(slot);
   }
   return (
@@ -54,7 +55,7 @@ const Booking = ({ treatments, date }) => {
             <input
               type="submit"
               placeholder="Type here"
-              class="btn btn-secondary w-full max-w-xs"
+              class="btn btn-secondary w-full max-w-xs text-white"
             />
           </form>
         </div>
