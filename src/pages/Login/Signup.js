@@ -1,7 +1,7 @@
 import React from "react";
 import {
-    useAuthState,
-    useCreateUserWithEmailAndPassword, useSignInWithGoogle, useUpdateProfile
+  useAuthState,
+  useCreateUserWithEmailAndPassword, useSignInWithGoogle, useUpdateProfile
 } from "react-firebase-hooks/auth";
 import { useForm } from "react-hook-form";
 import { Link, useLocation, useNavigate } from "react-router-dom";
@@ -9,14 +9,14 @@ import auth from "../../firebase.init";
 import Loading from "../Shared/Loading/Loading";
 
 const Signup = () => {
-    const [users, loadings, userError] = useAuthState(auth);
+    const [users, loadings, userError] = useAuthState(auth,{sendEmailVerification:true});
   const [signInWithGoogle, gUser, gLoading, gError] = useSignInWithGoogle(auth);
   const [
     createUserWithEmailAndPassword,
     user,
     loading,
     error,
-  ] = useCreateUserWithEmailAndPassword(auth);
+  ] = useCreateUserWithEmailAndPassword(auth,{sendEmailVerification:true});
   const [updateProfile, updating, updateError] = useUpdateProfile(auth);
   const {
     register,

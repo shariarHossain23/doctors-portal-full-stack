@@ -1,25 +1,30 @@
-import React from "react";
+import React, { useState } from "react";
 import {
-    useAuthState,
-    useSignInWithEmailAndPassword,
-    useSignInWithGoogle
+  useAuthState,
+  useSendPasswordResetEmail,
+  useSignInWithEmailAndPassword,
+  useSignInWithGoogle
 } from "react-firebase-hooks/auth";
 import { useForm } from "react-hook-form";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import auth from "../../firebase.init";
 import Loading from "../Shared/Loading/Loading";
 
 const Login = () => {
-    const [users, loadings, userError] = useAuthState(auth);
+  const [email,setEmail] = useState('')
+  const [users, loadings, userError] = useAuthState(auth);
   const [signInWithGoogle, gUser, gLoading, gError] = useSignInWithGoogle(auth);
   const [signInWithEmailAndPassword, user, loading, error] =
     useSignInWithEmailAndPassword(auth);
+  const [sendPasswordResetEmail, sending, Ferror] =
+    useSendPasswordResetEmail(auth);
   const {
     register,
     formState: { errors },
     handleSubmit,
   } = useForm();
-
+  
   let navigate = useNavigate();
   let location = useLocation();
   let from = location.state?.from?.pathname || "/";
@@ -30,11 +35,13 @@ const Login = () => {
   let signError;
   //   loading
   if (gLoading || loading) {
-    return <Loading></Loading>
+    return <Loading></Loading>;
   }
 
-  if (gError || error) {
-    signError = <p className="text-red-500 mb-2">{gError?.message || error?.message}</p>;
+  if (gError || error || Ferror) {
+    signError = (
+      <p className="text-red-500 mb-2">{gError?.message || error?.message}</p>
+    );
   }
   //   google sign in
   const googleSignIn = () => {
@@ -44,8 +51,18 @@ const Login = () => {
   const onSubmit = (data) => {
     signInWithEmailAndPassword(data.email, data.password);
   };
+
+  // forger password
+  const handleForgetPass = async (event) => {
+    
+   if(email){
+    await sendPasswordResetEmail(email);
+    toast.success('Sent email');
+}
+  
+  };
   return (
-    <div className="flex h-screen justify-center items-center">
+    <div className="flex h-screen justify-center items-center mt-6">
       <div className="card w-96 bg-base-100 shadow-xl">
         <div className="card-body">
           <h2 className="text-center text-2xl font-bold">Login</h2>
@@ -66,8 +83,10 @@ const Login = () => {
                   },
                 })}
                 type="email"
+                name="email"
+                onChange={(e)=>setEmail(e.target.value) }
                 placeholder=" your email"
-               className="input input-bordered w-full max-w-xs"
+                className="input input-bordered w-full max-w-xs"
               />
               <label className="label">
                 {errors.email?.type === "required" && (
@@ -99,7 +118,7 @@ const Login = () => {
                 })}
                 type="password"
                 placeholder=" your password"
-               className="input input-bordered w-full max-w-xs"
+                className="input input-bordered w-full max-w-xs"
               />
               <label className="label">
                 {errors.password?.type === "required" && (
@@ -114,6 +133,12 @@ const Login = () => {
                 )}
               </label>
             </div>
+            <button
+              onClick={handleForgetPass}
+              className="btn btn-link text-accent"
+            >
+              Forgot Password ?
+            </button>
             {signError}
             <input
               className="btn w-full max-w-xs"
@@ -121,7 +146,12 @@ const Login = () => {
               value="login"
             />
           </form>
-          <p>New to Doctors Portal?<Link to='/signup' className="text-secondary">Create new account</Link></p>
+          <p>
+            New to Doctors Portal?
+            <Link to="/signup" className="text-secondary">
+              Create new account
+            </Link>
+          </p>
           <div className="divider">OR</div>
           <button onClick={googleSignIn} className="btn btn-outline">
             Continue with google
