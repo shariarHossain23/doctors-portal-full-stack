@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   useAuthState,
   useSendPasswordResetEmail,
@@ -9,6 +9,7 @@ import { useForm } from "react-hook-form";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import auth from "../../firebase.init";
+import useToken from "../../hooks/useToken";
 import Loading from "../Shared/Loading/Loading";
 
 const Login = () => {
@@ -24,13 +25,17 @@ const Login = () => {
     formState: { errors },
     handleSubmit,
   } = useForm();
-  
+  const  [token] = useToken(user || gUser )
   let navigate = useNavigate();
   let location = useLocation();
   let from = location.state?.from?.pathname || "/";
-  if (users) {
-    navigate(from, { replace: true });
-  }
+  
+
+  useEffect(()=>{
+    if (token) {
+      navigate(from, { replace: true });
+    }
+  },[token,from,navigate])
 
   let signError;
   //   loading

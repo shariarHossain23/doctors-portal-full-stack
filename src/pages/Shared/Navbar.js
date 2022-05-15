@@ -9,6 +9,7 @@ const Navbar = () => {
 
   const logOut = () => {
     signOut(auth)
+    localStorage.removeItem("userToken")
   }
   const menuItems = <>
   <li> <Link to='/'>Home</Link> </li>
