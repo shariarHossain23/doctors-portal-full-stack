@@ -4,8 +4,10 @@ import 'react-toastify/dist/ReactToastify.css';
 import './App.css';
 import About from './pages/About/About';
 import Appoinment from './pages/Appoinment/Appoinment';
+import AddDoctor from './pages/Dashboard/AddDoctor';
 import AllUser from './pages/Dashboard/AllUser';
 import Dashboard from './pages/Dashboard/Dashboard';
+import ManageDoctor from './pages/Dashboard/ManageDoctor';
 import MyAppoitment from './pages/Dashboard/MyAppoitment';
 import MyHistory from './pages/Dashboard/MyHistory';
 import Myreview from './pages/Dashboard/Myreview';
@@ -42,7 +44,8 @@ function App() {
         <Route path='alluser' element={<RequireAdmin>
           <AllUser></AllUser>
         </RequireAdmin>}></Route>
-      
+        <Route path='add-doctor' element={<AddDoctor></AddDoctor>}></Route>
+        <Route path='manage-doctor' element={<ManageDoctor></ManageDoctor>}></Route>
       </Route>
       <Route path='/login'element={<Login></Login>}></Route>
       <Route path='/signup'element={<Signup></Signup>}></Route>
